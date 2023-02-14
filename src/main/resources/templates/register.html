@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>用户注册</title>
+		<link rel="stylesheet" href="/css/common.css" />
+		<link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.css" />
+	</head>
+	<body>
+		<div class="login-box">
+			<h1>Register</h1>
+			<form>
+				<div class="inputBox">
+					<i class="fa fa-user-circle-o"></i>
+					<input type="text" id="name" placeholder="Username" />
+				</div>
+				<div class="inputBox">
+					<i class="fa fa-key" aria-hidden="true"></i>
+					<input type="password" id="password" placeholder="Password" />
+				</div>
+				<div class="inputBox">
+					<i class="fa fa-key" aria-hidden="true"></i>
+					<input type="password" id="password2" placeholder="Repeat-Password" />
+				</div>
+				<button class="register" type="button" onclick="check()">注册</button>
+				<p class="backLogin" onclick="toLogin()">已经注册了？返回登录</p>
+			</form>
+		</div>
+		<script src="/js/jquery.js"></script>
+		<script>
+			function check() {
+				let username = $('#name').val()
+				let password = $('#password').val()
+				let password2 = $('#password2').val()
+				if (
+					username.length == 0 ||
+					password.length == 0 ||
+					password2.length == 0
+				) {
+					alert('表单尚未填写完整!')
+					return
+				}
+				if (password != password2) {
+					alert('两次密码不一致!')
+					return
+				}
+				if (password.length < 8) {
+					alert('密码太短!')
+					return
+				}
+				$.ajax({
+					url: '/check',
+					data: { name: $('#name').val(), password: $('#password').val() },
+					type: 'post',
+					async: 'false',
+					dataType: 'json',
+					success: function (data) {
+						alert(data.msg)
+						if (data.flag) {
+							window.location.href = '/login'
+						}
+					},
+				})
+			}
+			function toLogin() {
+				window.location.href = '/login'
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,193 @@
+html,
+body {
+	margin: 0;
+	background: url(../img/bg_1.png) fixed no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.page-mix {
+	background: #57606f60;
+	/* #e87b9460 */
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+	border-radius: 0.25rem;
+}
+
+/* 头部导航 */
+#top-menu {
+	width: 100vw;
+	height: 60px;
+	position: fixed;
+	top: 0;
+	z-index: 1001;
+}
+
+#words {
+	font-size: 18px;
+	color: #fff;
+	position: absolute;
+	right: 25px;
+}
+
+/* 左侧导航 */
+#left-menu {
+	width: 200px;
+	height: 100vh;
+	position: fixed;
+	z-index: 1001;
+	transition: all 0.3s ease;
+}
+
+#left-menu.xs {
+	margin-left: -200px;
+	transition: all 0.3s ease;
+}
+
+#left-menu #left-btn {
+	font-size: 40px;
+	color: #57606f;
+	/* #e87b94 */
+	position: absolute;
+	left: 220px;
+	height: 60px;
+	display: flex;
+	align-items: center;
+}
+
+/* 布局容器 */
+#container {
+	position: relative;
+	top: 60px;
+	margin-left: 220px;
+	margin-right: 20px;
+	padding: 10px 0;
+	/* background: #e87b94; */
+}
+
+#container.xs {
+	margin-left: 20px;
+}
+
+.content {
+	display: flex;
+	justify-content: center;
+	padding-top: 20px;
+	margin-bottom: 50px;
+	align-items: center;
+	flex-direction: column;
+}
+
+.content td {
+	background: #57606f60;
+	color: #fff;
+	/* #e87b94 */
+	font-size: 15px;
+}
+
+.flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+/* 上传 */
+.selected-file {
+	float: right;
+	margin-bottom: 10px;
+}
+
+.upload_center {
+	position: relative;
+	right: -700px;
+}
+
+.upload-wrap {
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	border: none;
+	border-radius: 8px;
+	margin-right: 10px;
+}
+.upload-wrap .file-ele {
+	position: absolute;
+	top: 0;
+	right: 0;
+	opacity: 0;
+	height: 100%;
+	width: 100%;
+	cursor: pointer;
+}
+
+.upload-wrap .file-selected,
+.upload-wrap .file-open {
+	width: 90px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	color: #fff;
+	background: #57606f;
+	border: none;
+}
+
+.fileField {
+	display: inline-block;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	margin: 5px 0;
+}
+
+.description {
+	font-size: 20px;
+	color: #fff;
+	font-weight: 700;
+	padding: 5px;
+}
+
+.introduction {
+	text-align: center;
+}
+
+.active {
+	display: none;
+}
+
+/* 页面底部 */
+#footer {
+	margin-top: 10px;
+	text-align: center;
+	padding: 10px 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: #fff;
+}
+
+/* 框架修改 */
+.el-submenu__title:hover {
+	background: #57606f60 !important;
+}
+
+.el-menu-item:hover {
+	background: #57606f60 !important;
+}
+
+.el-menu {
+	border: none;
+}
+
+.el-menu i {
+	color: #57606f;
+	/* #e87b94 */
+}
+
+/* 表格 */
+.el-table--enable-row-hover .el-table__body tr:hover > td {
+	background-color: #57606f !important;
+}
+
+/* 分页器 */
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+	background-color: #57606f !important;
+}

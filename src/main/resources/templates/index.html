@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>FileManageSystem</title>
+		<link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+		<link rel="stylesheet" href="/css/index_el.css" />
+		<style>
+			.el-col {
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<!-- 头部导航 -->
+			<div id="top-menu" class="page-mix">
+				<p id="words">Welcome,{{username}}</p>
+			</div>
+			<!-- 左侧导航 -->
+			<div id="left-menu" :class="'page-mix '+ mobile_left">
+				<i @click="showHideLeftMenu" id="left-btn" class="el-icon-menu"></i>
+				<!-- 导航栏 -->
+				<el-col :span="24" style="margin-top: 80px">
+					<el-menu	
+						class="el-menu-vertical-demo"
+						background-color="transparent"
+						text-color="#fff"
+						active-text-color="#57606f"
+						>
+							<el-submenu index="1">
+								<template slot="title">
+								<i class="el-icon-files"></i>
+								<span>文件共享</span>
+							</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1" @click="change1()">共享大厅</el-menu-item>
+									<el-menu-item index="1-2" @click="change2()">我的共享</el-menu-item>
+							</el-submenu>
+							<el-menu-item index="2" @click="change3()">
+								<i class="el-icon-user"></i>
+								<span slot="title">用户列表</span>
+						</el-menu-item>
+						<el-menu-item index="3" @click="exit()">
+							<i class="el-icon-back"></i>
+							<span slot="title">退出登录</span>
+						</el-menu-item>
+					</el-menu>
+				</el-col>
+			</div>
+			<!-- 页面内容 -->
+			<div id="container" :class="mobile_content">
+				<el-row>
+					<el-col :xs="24" >
+						<div class="page-mix" style="height: 580px">
+							<div class="content flex">
+								<div v-if="show===''">									
+									<el-row>
+									<el-col :xs="24">
+									<div class="" style="height: 580px">
+										<div class="content">
+										<div class="logo">
+											<el-image
+											style="width: 100%; height: 300px"
+											src="/img/Guizhou_Minzu_University_logo.png"
+											fit="'cover'"
+											></el-image>
+										</div>
+										<div class="description">
+											<h2 class="introduction">文件共享系统</h2>
+											<p class="introduction">Cerelise 呈献</p >
+										</div>
+										</div>
+									</div>
+									</el-col>
+								</el-row>
+								</div>
+								<div v-if="show==='1'" style="width:100%">
+                    <div class="selected-file">
+                      <div class="upload-wrap">
+                        <input
+                          type="file"
+                          class="file-ele"
+                          id="file"
+                          onchange="handleFiles()"
+                        />
+                        <button class="file-selected">
+                          <i class="el-icon-folder-add"></i>&nbsp;选择文件
+                        </button>
+                      </div>
+                      <div class="upload-wrap">
+                        <p class="fileField"></p>
+                      </div>
+                      <div class="upload-wrap">
+                        <button class="file-open" @click="upload()">
+                          <i class="el-icon-upload"></i>&nbsp;上传
+                        </button>
+                      </div>
+                    </div>
+								<el-table
+								  :row-style="getRowClass" :header-row-style="getRowClass" :header-cell-style="getRowClass" 
+								  :data="filesTable"
+								  style="width: 100%;border-radius: 5px;">
+								<el-table-column
+								  label="文件名"
+								  >
+								  <template slot-scope="scope">
+									<i class="el-icon-folder"></i>
+									<span style="margin-left: 10px">{{ scope.row.name }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="上传时间"
+								  >
+								  <template slot-scope="scope">
+									<i class="el-icon-time"></i>
+									<span style="margin-left: 10px">{{ scope.row.time }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="用户"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+                    <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.username }}</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="文件大小"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.size }}字节</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="IP"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.ip }}</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column label="操作">
+								  <template slot-scope="scope">
+									<el-button
+									  size="mini"
+                    type="success"
+									  @click="saveFile(scope.row.id)">下载</el-button>
+                  <!-- v-if 当不是管理员时不显示删除按钮 -->  
+                  <!-- :class如不是当前用户上传的文件则不显示删除按钮 -->
+									<el-button
+                    v-if='userId!=0'
+                    :class="{ active:scope.row.user != currentId  }"
+									  size="mini"
+									  type="danger"
+									  @click="deleteFile(scope.row.id)">删除</el-button>
+									<el-button
+                    v-else
+									  size="mini"
+									  type="danger"
+									  @click="deleteFile(scope.row.id)">删除</el-button>
+								  </template>
+								</el-table-column>
+							  </el-table>
+                <el-pagination style="margin-top:10px;display: flex; justify-content:center; align-items:center; flex-direction:row"
+							    background
+							    layout="prev, pager, next"
+							    :total="total"
+                  :page-size="pageSize"
+                  @current-change="currentChange">
+					      </el-pagination>
+							</div>
+							<!-- 我的文件	 -->
+              <div v-if="show==='2'" style="width:100%">
+								<el-table
+                :row-style="getRowClass" :header-row-style="getRowClass" :header-cell-style="getRowClass" 
+								:data="myFiles"
+								style="width: 100%;border-radius: 5px;">
+								<el-table-column
+								  label="文件名"
+								  >
+								  <template slot-scope="scope">
+									<i class="el-icon-folder"></i>
+									<span style="margin-left: 10px">{{ scope.row.name }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="上传时间"
+								  >
+								  <template slot-scope="scope">
+									<i class="el-icon-user"></i>
+									<span style="margin-left: 10px">{{ scope.row.time }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="用户"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.username }}</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="文件大小"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.size }}字节</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="IP"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>文件名:{{ scope.row.name }}</p>
+                    <p>上传时间:{{ scope.row.time }}</p>
+                    <p>所属用户: {{ scope.row.username }}</p>
+                    <p>文件大小:{{ scope.row.size }}字节</p>
+                    <p>ip: {{ scope.row.ip }}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.ip }}</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+								<el-table-column label="操作">
+								  <template slot-scope="scope">
+									<el-button
+                    type="success"
+									  size="mini"
+									  @click="saveFile(scope.row.id)">下载</el-button>
+									<el-button
+									  size="mini"
+									  type="danger"
+									  @click="deleteFile(scope.row.id)">删除</el-button>
+								  </template>
+								</el-table-column>
+							  </el-table>
+							</div>
+								<div  v-if="show==='3'" style="width:100%">
+								<el-table
+                :row-style="getRowClass" :header-row-style="getRowClass" :header-cell-style="getRowClass" 
+								:data="userStatus"
+								style="width: 100%;border-radius: 5px;">
+								<el-table-column
+								  label="用户名"
+								  >
+								  <template slot-scope="scope">
+									<i class="el-icon-user"></i>
+									<span style="margin-left: 10px">{{ scope.row.name }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="用户密码"
+								  >
+								  <template slot-scope="scope">
+                  <i class="el-icon-key"></i>
+									<span style="margin-left: 10px">{{ scope.row.password }}</span>
+								  </template>
+								</el-table-column>
+								<el-table-column
+								  label="是否为管理员"
+								  >
+								  <template slot-scope="scope">
+									<el-popover trigger="hover" placement="top">
+									  <p>用户名: {{ scope.row.name }}</p>
+									  <p>是否为管理员: {{ scope.row.role | admin}}</p>
+									  <div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ scope.row.role | admin}}</el-tag>
+									  </div>
+									</el-popover>
+								  </template>
+								</el-table-column>
+							  </el-table>
+							</div>
+							</div>
+						</div>
+					</el-col>
+				</el-row>
+				<div id="footer" class="page-mix">
+					<span>Copyright © 2021 Guizhou Minzu University - Cerelise</span>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="/js/vue.js"></script>
+	<script src="/js/index.js"></script>
+  <script src="/js/axios.min.js"></script>
+  <script src="/js/jquery.js"></script>
+	<script>
+    function upload() {
+				var file = $('#file')[0].files[0]
+        // var file = document.getElementById('#file')[0].files[0]
+				var formData = new FormData()
+				formData.append('userfile', file)
+        console.log(formData.get('userfile'))
+				$.ajax({
+					url: '/setFile',
+					type: 'post',
+					data: formData,
+					async: 'false',
+					dataType: 'json',
+					processData: false,
+					cache: false,
+					contentType: false,
+					success: function (data) {
+						alert(data.msg)
+						// console.log(data)
+						if (data.flag) {
+							window.location.href = '/index'
+						}
+					},
+				})
+			}
+
+    function handleFiles() { 
+			const fileName = document.getElementById('file').files[0].name
+			document.querySelector('.fileField').innerHTML = fileName
+			// console.log(fileName)
+		}
+
+		let app = new Vue({
+			el: '#app',
+			data() {
+				return {
+					screenWidth: document.body.clientWidth,
+					mobile_left: '',
+					mobile_content: '',
+					username:"", 
+					show:"",
+					filesTable: [],
+          myFiles:[],
+          userStatus:[],
+          // 分页
+          currentPage: 1,
+          pageSize: 7,
+          total:100,
+          // filter
+          uploadId:0,
+          userId:1,
+				}
+			},
+      filters:{
+        admin(val){
+          return ['是','否'][val]
+        },
+        status(val){
+          return ['否','是'][val]
+        }
+      },
+			mounted() {
+				this.changeDevice()
+        this.getUserName()
+        this.getFilesList()
+        this.getMyFiles()
+        this.getUserStatus()
+        // 分页
+        this.currentChange(this.currentPage)
+        this.getListFile(this.currentPage) 
+			},
+
+			methods: {
+				getRowClass({ row, column, rowIndex, columnIndex }) {
+                return "background:#57606f60;border:none;color:#fff";
+            },
+				change1(){
+					this.show ="1";
+				},
+				change2(){
+					this.show ="2";
+				},
+				change3(){
+					this.show ="3";
+
+				},
+				changeDevice() {
+					if (this.screenWidth <= 500) {
+						this.mobile_left = 'xs'
+						this.mobile_content = 'xs'
+					}
+				},
+				showHideLeftMenu() {
+					this.mobile_left == ''
+						? (this.mobile_left = 'xs')
+						: (this.mobile_left = '')
+					if (this.screenWidth > 500) {
+						this.mobile_content == ''
+							? (this.mobile_content = 'xs')
+							: (this.mobile_content = '')
+					}
+				},
+        // 上传文件
+        upload(){
+          var file = $('#file')[0].files[0]
+          console.log(file)
+          var formData = new FormData() 
+          formData.append('userfile',file)
+          axios({
+            url:'/setFile',
+            method:'post',
+            data:formData
+          }).then(res=>{
+            alert(res.data.msg)
+            if (res.data.flag) {
+							window.location.href = '/index'
+						}
+          })
+        },
+				// 获取用户名
+        getUserName(){
+          axios({
+            url:'/getUser',
+            method:"post",
+          }).then(res=>{
+            this.username = res.data.obj.name
+          })
+        },
+        // 获取共享大厅文件
+        getFilesList(){
+          axios({
+            url:'/getFiles',
+            method:'post',
+          }).then(res=>{
+            if(res.data.flag){
+              console.log(res.data)
+              this.filesTable = res.data.obj
+              // 是否是管理员
+              this.userId = res.data.msg.split(':')[1]
+              // 当前用户ID
+              this.currentId = res.data.msg.split(':')[0]
+            }
+            else{
+              alert("数据获取失败！")
+            }
+          })
+        },
+        // 获取我的文件
+        getMyFiles(){
+          axios({
+            url:'/getMyFiles',
+            method:'post'
+          }).then(res=>{
+            if(res.data.flag){
+              // console.log(res.data)
+              this.myFiles = res.data.obj
+            } else {
+              alert("数据获取失败！")
+            }
+          })
+        },
+        // 用户列表
+        getUserStatus(){
+          axios({
+            url:'/inline',
+            method:'post',
+          }).then(res=>{
+            if(res.data.flag){
+              // console.log(res.data)
+              this.userStatus = res.data.obj
+            } else {
+              alert("数据获取失败！")
+            }
+          })
+        },
+        // 删除文件
+        deleteFile(id){
+          axios({
+            url:'/delFile',
+            method:'post',
+            params:{
+              id:id
+            }
+          }).then(res=>{
+            console.log(id)
+            alert(res.data.msg)
+            if(res.data.flag){
+              window.location.href = '/index'
+            }
+          })
+        },
+        // 下载文件
+        saveFile(id){
+          window.location.href = '/saveFile?id=' + id
+        },
+        // 分页
+        getListFile(pageNo){
+          axios({
+            url:'/getFilePage',
+            method:'get',
+            params:{
+              pageNo,
+              pageSize:this.pageSize
+            }
+          }).then(res=>{
+            console.log(res)
+            this.filesTable = res.data.obj
+            // this.myFiles = res.data.obj
+            this.total = Number(res.data.msg)
+            // console.log(this.total)
+          })
+        },
+        // 获取当前页
+        currentChange(val){
+          console.log("第"+val+"页")
+          this.currentPage = val
+          this.getListFile(val)
+        },
+         // 退出登录
+         exit(){
+          axios({
+            url:'/layout',
+            method:'post'
+          }).then(res=>{
+            alert(res.data.msg)
+            if(res.data.flag){
+              window.location.href = '/login'
+            }
+         })
+        }
+			},
+		})
+    
+	</script>
+</html>
